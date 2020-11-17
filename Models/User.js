@@ -25,10 +25,10 @@ const UserSchema = new mongoose.Schema({
         zipcode: String
     },
     studentReviews: [{
-        userId: {type: mongoose.ObjectId},
+        userId: {type: mongoose.Schema.Types.ObjectId},
         createdAt: {type: Date, default: Date.now},
         comments: String,
-        courseId: {type: mongoose.ObjectId}
+        courseId: {type: mongoose.Schema.Types.ObjectId}
     }]
 })
 

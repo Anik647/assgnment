@@ -10,11 +10,11 @@ const CourseSchema = new mongoose.Schema({
         required: true
     },
     teacher: {
-        type: mongoose.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         unique: true
     },
     enrolledStudents: {
-        type: [ mongoose.ObjectId ]
+        type: [ mongoose.Schema.Types.ObjectId ]
     }
 })
 

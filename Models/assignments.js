@@ -7,7 +7,7 @@ const AssignmentSchema = new mongoose.Schema({
     studentID: {type: mongoose.ObjectId},
     conductedOn: {type: Date, default: Date.now},
     assignmentType: String, enum:['internal', 'external'],
-    attemptNo: {type: Number, enum:[1, 2]},
+    attemptNo: {type: Number},
     proctoredBy: mongoose.ObjectId
 })
 
