@@ -55,16 +55,18 @@ app.post('/users/studentReviews/:teacheremail/:studentemail/:course', async(req,
     try {
 
         const body = req.body
-
+        const teacheremail = req.params.teacheremail
         // const teacher = find teacher
-        const teacher = await User.find({email: body.email, userType:"teacher"})
+        const teacher = await User.find({email: teacheremail, userType:"teacher"})
         if(!teacher) return res.status(404).send('User not found')
         // const student = find student
-        const student = await User.find({email: body.email, userType:"student"})
+        const studentemail = req.params.studentemail
+        const student = await User.find({email: studentemail, userType:"student"})
         if(!student) return res.status(404).send('User not found');
         // const course = find course
-        const course = await Course.find({name: body.name})
-        if(!course) return res.status(400).send('Bad Request')
+        const courseName = req.params.course
+        const _course = await Course.find({name: courseName})
+        if(!_course) return res.status(400).send('Bad Request')
         // ensure userType for student and teacher
         const review = {
             comments: req.body.comments,
@@ -73,7 +75,7 @@ app.post('/users/studentReviews/:teacheremail/:studentemail/:course', async(req,
         }
 
         const user = await User.findOneAndUpdate({
-            email: body.email, userType: "teacher"
+            email: teacheremail, userType: "teacher"
         },
             {$push: {studentReviews: review}},
             {
@@ -93,7 +95,7 @@ app.post('/courses', async(req, res) => {
         const body = req.body
     //todo joi validation(already done in the model)
     const _course = await Course.findOne({name: body.name})
-    if(_course) return res.status(404).send('Given course does not exist');
+    if(_course) return res.status(400).send('Given course already exists');
     const course = await Course.findOneAndUpdate({
         name: body.name
     },
