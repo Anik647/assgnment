@@ -172,9 +172,9 @@ app.put('/courses/:id', async(req, res) => {
     const course = await Course.find({_id: id})
     console.log(course);
     if(!course) return res.status(404).send('User not found');
-    const result = await Course.findOneAndUpdate({_id: id}, {name = req.body.name,
-        description = req.body.description,
-        _id = req.body._id}, {upsert: true})
+    const result = await Course.findOneAndUpdate({_id: id}, {name : req.body.name,
+        description : req.body.description,
+        _id : req.body._id}, {upsert: true})
      
     console.log(result)
     return res.send(result);
