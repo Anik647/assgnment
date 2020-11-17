@@ -117,7 +117,7 @@ app.post('/courses', async (req, res) => {
             description: req.body.description
         })
         const result = await course1.save()
-        res.send(result)
+        return res.send(result)
     }
     catch(err){
         console.error(err);
@@ -133,7 +133,7 @@ app.post('/assignments', async(req, res) => {
           courseID: req.body.courseID,
           studentID: req.body.studentID,
           assignmentType: req.body.assignmentType,
-          
+          attemptNo: req.body.attemptNo,
           proctoredBy: req.body.proctoredBy
        })
        const result = await assignment1.save();
@@ -147,28 +147,38 @@ app.post('/assignments', async(req, res) => {
 })
 
 app.put('/users/:email', async(req, res) => {
-   const user = await User.find(u => u.email === req.params.email)
-
-   if(!user) return res.status(404).send('User not found');
-
-   user.name = req.body.name;
-   user.age = req.body.age;
-   user.address = req.body.address;
-
-   return res.send(user);
+   try {
+    const email = req.params.email
+    console.log(email);
+    const user = await User.find({email: email})
+    console.log(user)
+     if(!user) return res.status(404).send('User not found');
+    const result = await User.findOneAndUpdate({email: email}, {name:req.body.name, age: req.body.age, address: req.body.address}, {upsert: true})
+    
+ 
+    //const result = await user.save();
+      console.log(result)
+      return res.send(result);
+   } catch (error) {
+       console.error(error)
+   }
 })
 
 app.put('/courses/:id', async(req, res) => {
-    const course = await Course.find(c => c.id === parseInt(req.params.id))
+    try {
+        const id = req.params.id;
+    const course = await Course.find({_id: id})
+    console.log(course);
     if(!course) return res.status(404).send('User not found');
-
-    course.name = req.body.name;
-    course.description = req.body.description;
-    course._id = req.body._id;
-
-    const result = await course.save();
-
+    const result = await Course.findOneAndUpdate({_id: id}, {name = req.body.name,
+        description = req.body.description,
+        _id = req.body._id}, {upsert: true})
+     
+    console.log(result)
     return res.send(result);
+    } catch (error) {
+        console.error(error);
+    }
 })
 
 
@@ -205,7 +215,7 @@ app.get('/user/:studentemail', async (req, res) => {
     .find({userId: studentId})
     .select({studentReviews: 1})
     obj.reviewsOnStudent = reviewsOnStudent
-    res.send(obj)
+    return res.send(obj)
     
 });
 
@@ -238,7 +248,7 @@ app.get('/user/:teacheremail', async (req, res) => {
     .select({studentReviews: 1})
     obj.reviewsByStudents = reviewsByStudents
     // res.send(reviewsByStudents)
-    res.send(obj);
+    return res.send(obj);
 
     
 });
@@ -268,14 +278,14 @@ app.get('/courses/:id', async (req, res) => {
 
    const assignements = await Assignment.find({courseID: id})
    obj.assignments = assignments
-   res.send(obj);
+   return res.send(obj);
     
 });
 
 app.get('/reviews', async(req, res) => {
     const reviews = await User.find().select({studentReviews: 1});
     if(!reviews) return res.status(400).send('Bad request');
-    res.send(reviews);
+    return res.send(reviews);
 })
 
 
