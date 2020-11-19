@@ -71,7 +71,7 @@ app.post('/users/studentReviews/:teacheremail/:studentemail/:course', async(req,
         const review = {
             comments: req.body.comments,
             userId: student._id,
-            courseId: course._id,
+            courseId: _course._id,
         }
 
         const user = await User.findOneAndUpdate({
@@ -83,7 +83,7 @@ app.post('/users/studentReviews/:teacheremail/:studentemail/:course', async(req,
             new: true
         })
         return res.send(user);
-    } catch (error) {
+    } catch (err) {
         console.error(err);
         return res.status(400).send('Bad Request')
     }
